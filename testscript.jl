@@ -4,8 +4,8 @@
 A Julia script used for testing and development.
 =#
 
-using FinnishArchetypeBuildingModel
-import FinnishArchetypeBuildingModel.ArchetypeBuildingModel.load_definitions_template
+using FinArBuMo
+import FinArBuMo.ArBuMo.load_definitions_template
 
 ## Define required inputs
 
@@ -14,10 +14,10 @@ datapackage_paths = [
     "raw_data\\finnish_RT_structural_data\\datapackage.json",
     "raw_data\\Finnish-building-stock-default-structural-data\\datapackage.json"
 ]
-definitions_url = "sqlite:///C:\\_SPINEPROJECTS\\flexib_finland_data\\archetype_definitions.sqlite"
+definitions_url = "sqlite:///C:\\_SPINEPROJECTS\\flexib_finnish_building_stock_validation_v08\\archetype_definitions.sqlite"
 objects_url = definitions_url
 weather_url = definitions_url
-results_url = "sqlite:///C:\\_SPINEPROJECTS\\flexib_finland_data\\backbone_input.sqlite"
+results_url = "sqlite:///C:\\_SPINEPROJECTS\\flexib_finnish_building_stock_validation_v08\\results.sqlite"
 
 num_lids = Inf # Limit number of location ids to save time on test processing.
 tcw = 0.5 # Thermal conductivity weight, average.
@@ -61,7 +61,7 @@ else
     end
 end
 @info "Deserialize saved data..."
-@time data = FinnishArchetypeBuildingModel.deserialize(filepath)
+@time data = FinArBuMo.deserialize(filepath)
 
 
 ## Import, merge, and test definitions
@@ -75,42 +75,43 @@ m = Module()
 @time run_input_data_tests(m)
 
 
-## Process ScopeData and WeatherData, and create the ArchetypeBuildings
+## Process ScopeData and create the ArchetypeBuildings
 
-scope_data_dictionary, weather_data_dictionary, archetype_dictionary =
-    archetype_building_processing(
-        weather_url,
-        save_layouts;
-        realization=realization,
-        mod=m
-    )
+scope_data_dictionary, archetype_dictionary = archetype_building_processing(
+    m;
+    save_layouts=save_layouts,
+    realization=realization,
+)
 
 
 ## Heating/cooling demand calculations.
 
 archetype_results_dictionary = solve_archetype_building_hvac_demand(
     archetype_dictionary;
-    free_dynamics=false,
+    mod=m,
     realization=realization,
-    mod=m
 )
+
 
 ## Write the results back into the input datastore
 
+results__building_archetype,
 results__building_archetype__building_node,
 results__building_archetype__building_process,
 results__system_link_node = initialize_result_classes!(m)
 add_results!(
+    results__building_archetype,
     results__building_archetype__building_node,
     results__building_archetype__building_process,
     results__system_link_node,
     archetype_results_dictionary;
-    mod=m
+    mod=m,
 )
 @info "Importing `ArchetypeBuildingResults` into `$(results_url)`..."
 @time import_data(
     results_url,
     [
+        results__building_archetype,
         results__building_archetype__building_node,
         results__building_archetype__building_process,
         results__system_link_node,

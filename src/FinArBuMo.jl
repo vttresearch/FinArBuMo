@@ -1,7 +1,7 @@
-module FinnishArchetypeBuildingModel
+module FinArBuMo
 
 using FinnishBuildingStockData
-using ArchetypeBuildingModel
+using ArBuMo
 using Serialization
 
 export add_results!,
@@ -24,4 +24,4 @@ export add_results!,
     merge_data!,
     write_to_url
 
-end # module FinnishArchetypeBuildingModel
+end # module FinArBuMo

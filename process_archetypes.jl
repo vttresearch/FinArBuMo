@@ -6,8 +6,8 @@ The main program file for Spine Toolbox.
 
 using Pkg
 Pkg.activate(@__DIR__)
-using FinnishArchetypeBuildingModel
-import FinnishArchetypeBuildingModel.ArchetypeBuildingModel.load_definitions_template
+using FinArBuMo
+import FinArBuMo.ArBuMo.load_definitions_template
 m = Module()
 
 
@@ -120,7 +120,7 @@ else
     end
 end
 @info "Deserialize saved data..."
-@time data = FinnishArchetypeBuildingModel.deserialize(filepath)
+@time data = FinArBuMo.deserialize(filepath)
 
 
 ## Import, merge, and test definitions

@@ -41,7 +41,7 @@ Pkg.develop("<path_to_ArBuMo>")
 ```
 You might also need to install the dependencies of
 [FinnishBuildingStockData](https://github.com/vttresearch/FinnishBuildingStockData)
-and [ArBuMo](https://github.com/vttresearch/ArchetypeBuildingModel)
+and [ArBuMo](https://github.com/vttresearch/ArBuMo)
 by running
 ```julia
 using Pkg
