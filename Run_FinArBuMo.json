@@ -1,0 +1,13 @@
+{
+    "name": "Run_FinArBuMo",
+    "tooltype": "julia",
+    "includes": [
+        "Run_FinArBuMo.jl"
+    ],
+    "description": "Process archetype buildings directly from raw data and definitions using FinArBuMo.jl, avoiding bottlenecks in Spine DB API.",
+    "inputfiles": [],
+    "inputfiles_opt": [],
+    "outputfiles": [],
+    "cmdline_args": [],
+    "includes_main_path": "."
+}

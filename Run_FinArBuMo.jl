@@ -1,5 +1,5 @@
 #=
-    process_archetypes.jl
+    Run_FinArBuMo.jl
 
 The main program file for Spine Toolbox.
 =#
@@ -134,43 +134,43 @@ m = Module()
 @time run_input_data_tests(m)
 
 
-## Process ScopeData and WeatherData, and create the ArchetypeBuildings
+## Process ScopeData and create the ArchetypeBuildings
 
-scope_data_dictionary, weather_data_dictionary, archetype_dictionary =
-    archetype_building_processing(
-        weather_url,
-        save_layouts;
-        realization=realization,
-        mod=m
-    )
+scope_data_dictionary, archetype_dictionary = archetype_building_processing(
+    m;
+    save_layouts=save_layouts,
+    realization=realization,
+)
 
 
 ## Heating/cooling demand calculations.
 
 archetype_results_dictionary = solve_archetype_building_hvac_demand(
     archetype_dictionary;
-    free_dynamics=false,
+    mod=m,
     realization=realization,
-    mod=m
 )
 
 
-## Write the results into the desired datastore.
+## Write the results back into the input datastore
 
+results__building_archetype,
 results__building_archetype__building_node,
 results__building_archetype__building_process,
 results__system_link_node = initialize_result_classes!(m)
 add_results!(
+    results__building_archetype,
     results__building_archetype__building_node,
     results__building_archetype__building_process,
     results__system_link_node,
     archetype_results_dictionary;
-    mod=m
+    mod=m,
 )
 @info "Importing `ArchetypeBuildingResults` into `$(results_url)`..."
 @time import_data(
     results_url,
     [
+        results__building_archetype,
         results__building_archetype__building_node,
         results__building_archetype__building_process,
         results__system_link_node,
@@ -200,6 +200,5 @@ end
 All done!
 You can access the `ArchetypeBuilding` data in the `archetype_dictionary`,
 and the `ArchetypeBuildingResults` in the `archetype_results_dictionary`.
-`ScopeData` and `WeatherData` are also available in the `scope_data_dictionary`
-and `weather_data_dictionary` respectively.
+`ScopeData` is also available in the `scope_data_dictionary`.
 """
