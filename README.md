@@ -7,6 +7,9 @@ The goal of this module is to integrate the Julia workflows of
 and [ArBuMo](https://github.com/vttresearch/ArBuMo),
 in order to reduce the required computational time.
 
+>[!IMPORTANT]
+>2024-08-16: The *FlexiB* project funding this research is ending, making it unlikely that this module will receive see further active development.
+
 
 ## Installation
 
